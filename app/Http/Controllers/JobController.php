@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobRequest;
 use App\Http\Requests\UpdateJobRequest;
+use App\Models\Company;
 use App\Models\Job;
+use Illuminate\Support\Facades\App;
 
 class JobController extends Controller
 {
@@ -13,8 +15,18 @@ class JobController extends Controller
      */
     public function index()
     {
+        $filter_cat = Job::select('category')
+            ->distinct()
+            ->pluck('category');
+        $filter_com = Company::select('users.name')
+            ->distinct()
+            ->join('jobs', 'jobs.company_id', '=', 'companies.id')
+            ->join('users', 'companies.user_id', '=', 'users.id')
+            ->get()
+            ->pluck('name');
+        $message = "none";
         $jobs = Job::orderBy('created_at', 'desc')->paginate(12);
-        return view('dashboard', compact("jobs"));
+        return view('dashboard', with(["jobs" => $jobs, "message" => $message, "word" => "", "filter_cat" => $filter_cat, "filter_com" => $filter_com]));
     }
 
     /**
@@ -88,5 +100,61 @@ class JobController extends Controller
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
+    }
+
+    public function search()
+    {
+
+        $filter_cat = Job::select('category')
+            ->distinct()
+            ->pluck('category');
+        $filter_com = Company::select('users.name')
+            ->distinct()
+            ->join('jobs', 'jobs.company_id', '=', 'companies.id')
+            ->join('users', 'companies.user_id', '=', 'users.id')
+            ->get()
+            ->pluck('name');
+        $word = request("search");
+
+        $f_com = request("filter_com");
+
+        $f_cat = request("filter_cat");
+
+//        $jobs = Job::when($word, function ($query) use ($word) {
+//            $query->where('jobs.name', 'like', "%$word%")
+//                ->orWhere('description', 'like', "%$word%");
+//        })->join('companies', 'jobs.company_id', '=', 'companies.id')
+//            ->join('users', 'companies.user_id', '=', 'users.id')
+//            ->where('users.name', 'like', "%$f_com%")
+//            ->where('jobs.category', 'like', "%$f_cat%")
+//            ->orderBy('jobs.created_at', 'desc')
+//            ->paginate(12);
+
+        $jobs = Job::when($word, function ($query) use ($word) {
+            $query->where(function ($subquery) use ($word) {
+                $subquery->where('jobs.name', 'like', "%$word%")
+                    ->orWhere('jobs.description', 'like', "%$word%");
+            });
+        })
+            ->join('companies', 'jobs.company_id', '=', 'companies.id')
+            ->join('users', 'companies.user_id', '=', 'users.id')
+            ->when($f_com, function ($query) use ($f_com) {
+                $query->where('users.name', 'like', "%$f_com%");
+            })
+            ->when($f_cat, function ($query) use ($f_cat) {
+                $query->where('jobs.category', 'like', "%$f_cat%");
+            })
+            ->select('jobs.*') // Pilih kolom-kolom dari tabel jobs yang ingin Anda ambil
+            ->orderBy('jobs.created_at', 'desc')
+            ->paginate(12);
+
+
+        if ($jobs->count() == 0) {
+            $message = "Keyword \"$word\" not found";
+        } else {
+            $message = "Showing result of \"$word\"";
+        }
+
+        return view('dashboard', with(["jobs" => $jobs, "message" => $message, "word" => $word, "filter_cat" => $filter_cat, "filter_com" => $filter_com]));
     }
 }
