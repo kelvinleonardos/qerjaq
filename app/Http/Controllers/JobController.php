@@ -120,16 +120,6 @@ class JobController extends Controller
 
         $f_cat = request("filter_cat");
 
-//        $jobs = Job::when($word, function ($query) use ($word) {
-//            $query->where('jobs.name', 'like', "%$word%")
-//                ->orWhere('description', 'like', "%$word%");
-//        })->join('companies', 'jobs.company_id', '=', 'companies.id')
-//            ->join('users', 'companies.user_id', '=', 'users.id')
-//            ->where('users.name', 'like', "%$f_com%")
-//            ->where('jobs.category', 'like', "%$f_cat%")
-//            ->orderBy('jobs.created_at', 'desc')
-//            ->paginate(12);
-
         $jobs = Job::when($word, function ($query) use ($word) {
             $query->where(function ($subquery) use ($word) {
                 $subquery->where('jobs.name', 'like', "%$word%")
@@ -156,5 +146,23 @@ class JobController extends Controller
         }
 
         return view('dashboard', with(["jobs" => $jobs, "message" => $message, "word" => $word, "filter_cat" => $filter_cat, "filter_com" => $filter_com]));
+    }
+
+    public function getOffered($id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        $filter_cat = Job::select('category')
+            ->distinct()
+            ->pluck('category');
+        $filter_com = Company::select('users.name')
+            ->distinct()
+            ->join('jobs', 'jobs.company_id', '=', 'companies.id')
+            ->join('users', 'companies.user_id', '=', 'users.id')
+            ->get()
+            ->pluck('name');
+        $jobs = Job::where('company_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return view('job-list', with(["jobs" => $jobs, "word" => "", "filter_cat" => $filter_cat, "filter_com" => $filter_com]));
     }
 }
