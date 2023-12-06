@@ -40,7 +40,8 @@ class RegisteredUserController extends Controller
             'address' => ['required', 'string'],
             'city' => ['required', 'string'],
             'country' => ['required', 'string'],
-            "most_interest" => ['required', 'string']
+            "most_interest" => ['required', 'string'],
+            'profile_pict' => ['required']
         ]);
 
         $user = User::create([
@@ -53,7 +54,8 @@ class RegisteredUserController extends Controller
             'address' => $request->address,
             'city' => $request->city,
             'country' => $request->country,
-            "most_interest" => $request->most_interest
+            "most_interest" => $request->most_interest,
+            'profile_pict' => $request->file('profile_pict')->store("profile_pict")
         ]);
 
         event(new Registered($user));

@@ -79,11 +79,21 @@ class JobController extends Controller
 
     public function getDetails(String $id)
     {
+        $filter_cat = Job::select('category')
+            ->distinct()
+            ->pluck('category');
+        $filter_com = Company::select('users.name')
+            ->distinct()
+            ->join('jobs', 'jobs.company_id', '=', 'companies.id')
+            ->join('users', 'companies.user_id', '=', 'users.id')
+            ->get()
+            ->pluck('name');
+
         if (\Illuminate\Support\Facades\Auth::check()) {
             $details = Job::where('id', $id)
                 ->get();
             $related = $this->getRelated($id);
-            return view('job-details', with(['details' => $details, 'related' => $related]));
+            return view('job-details', with(['details' => $details, 'related' => $related, "word" => "", "filter_cat" => $filter_cat, "filter_com" => $filter_com]));
         } else {
             return view('auth.login');
         }

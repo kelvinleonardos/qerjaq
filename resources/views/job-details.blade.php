@@ -92,7 +92,7 @@
 
                                 <h2 class="mb-5 text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">Upload your CV</h2>
                                 <div class="max-w-lg flex justify-start">
-                                    <form>
+                                    <form enctype="multipart/form-data">
                                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="user_avatar">Upload file</label>
                                         <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="user_avatar_help" id="user_avatar" type="file">
                                         <div class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="user_avatar_help">A profile picture is useful to confirm your are logged into your account</div>
@@ -127,6 +127,7 @@
                         <h5 class="m-3 text-md font-medium text-gray-900 dark:text-white">Other job from this company:</h5>
                         <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
                             @foreach($related as $r)
+                                <a href="#" class="block max-w-sm bg-white border border-gray-200 shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                                 <a href="#" class="block max-w-sm bg-white border border-gray-200 shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                                     <li class="p-3 sm:p-4">
                                         <div class="flex items-center space-x-4 rtl:space-x-reverse">
