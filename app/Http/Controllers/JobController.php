@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateJobRequest;
 use App\Models\Company;
 use App\Models\Job;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Redirect;
 
 class JobController extends Controller
 {
@@ -87,11 +88,11 @@ class JobController extends Controller
             'applicants_quota' => intval($request->applicants_quota),
             'applicants_count' => 0,
             'isActive' => 1,
-            'company_id' => $request->user()->id,
+            'company_id' => $request->user()->company->id,
         ]);
 
 
-        return redirect()->to("/job-offered/{$request->user()->id}");
+        return redirect()->to("/job-offered/{$request->user()->company->id}");
     }
 
     /**
@@ -121,9 +122,13 @@ class JobController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Job $job)
+    public function destroy(Job $id)
     {
-        //
+        $cid = $id->company_id;
+
+        $id->delete();
+
+        return Redirect::to("/job-offered/$cid");
     }
 
     public function getDetails(String $id)

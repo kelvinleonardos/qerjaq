@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Applicant;
+use App\Models\Company;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -61,10 +62,12 @@ class RegisteredUserController extends Controller
 
         if ($request->role == '1') {
             $applicant = Applicant::create([
-               'user'
+               'user_id' => $user->id,
             ]);
         } elseif ($request->role == '2') {
-
+            $company = Company::create([
+               'user_id' => $user->id,
+            ]);
         }
 
         event(new Registered($user));

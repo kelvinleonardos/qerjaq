@@ -34,7 +34,7 @@ class Job extends Model
 
     public function company(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-            return $this->belongsTo(User::class);
+            return $this->belongsTo(Company::class);
     }
 
 

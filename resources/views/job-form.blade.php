@@ -17,7 +17,7 @@
                     </div>
 
                     <div class="w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                        <form method="POST" action="/create-job/{{ \Illuminate\Support\Facades\Auth::user()->id }}" enctype="multipart/form-data">
+                        <form method="POST" action="/create-job/{{ \Illuminate\Support\Facades\Auth::user()->company->id }}" enctype="multipart/form-data">
                             @csrf
                             <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 rounded-t-lg bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800" id="defaultTab" data-tabs-toggle="#defaultTabContent" role="tablist">
                                 <li class="me-2">
@@ -26,7 +26,7 @@
                                 <li class="ml-2 m-auto">
                                     <button id="statistics-tab" type="submit" role="tab"  class="relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
                                         <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-800 rounded-md group-hover:bg-opacity-0">
-                                            APPLY NOW
+                                            CREATE JOB
                                         </span>
                                     </button>
                                 </li>

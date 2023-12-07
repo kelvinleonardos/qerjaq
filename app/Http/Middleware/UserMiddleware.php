@@ -17,7 +17,7 @@ class UserMiddleware
     {
         $authenticatedUser = $request->user();
 
-        if ($authenticatedUser && $authenticatedUser->id == $request->route()->id) {
+        if ($authenticatedUser && $authenticatedUser->company->id == $request->route()->id) {
             return $next($request);
         }
 
