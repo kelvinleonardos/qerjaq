@@ -41,7 +41,7 @@ class RegisteredUserController extends Controller
             'city' => ['required', 'string'],
             'country' => ['required', 'string'],
             "most_interest" => ['required', 'string'],
-            'profile_pict' => ['required']
+            'profile_pict' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
         $user = User::create([
