@@ -34,7 +34,21 @@ class JobController extends Controller
      */
     public function create()
     {
-        //
+        $filter_cat = Job::select('category')
+            ->distinct()
+            ->pluck('category');
+        $filter_com = Company::select('users.name')
+            ->distinct()
+            ->join('jobs', 'jobs.company_id', '=', 'companies.id')
+            ->join('users', 'companies.user_id', '=', 'users.id')
+            ->get()
+            ->pluck('name');
+        return view('job-form', [
+            'status' => 'create',
+            'word' => "",
+            'filter_cat' => $filter_cat,
+            'filter_com' => $filter_com
+        ]);
     }
 
     /**
@@ -42,7 +56,42 @@ class JobController extends Controller
      */
     public function store(StoreJobRequest $request)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'position' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'country' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'requirements' => ['required', 'string'],
+            'salary' => ['required', 'string', 'max:255'],
+            'job_pict' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'applicants_quota' => ['required', 'string'],
+        ]);
+
+
+        $user = Job::create([
+            'name' => $request->name,
+            'position' => $request->position,
+            'category' => $request->category,
+            'type' => $request->type,
+            'address' => $request->address,
+            'city' => $request->city,
+            'country' => $request->country,
+            'description' => $request->description,
+            'requirements' => $request->requirements,
+            'salary' => intval($request->salary),
+            'job_pict' => $request->file('job_pict')->store("job_pict"),
+            'applicants_quota' => intval($request->applicants_quota),
+            'applicants_count' => 0,
+            'isActive' => 1,
+            'company_id' => $request->user()->id,
+        ]);
+
+
+        return redirect()->to("/job-offered/{$request->user()->id}");
     }
 
     /**

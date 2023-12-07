@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Applicant;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -57,6 +58,14 @@ class RegisteredUserController extends Controller
             "most_interest" => $request->most_interest,
             'profile_pict' => $request->file('profile_pict')->store("profile_pict")
         ]);
+
+        if ($request->role == '1') {
+            $applicant = Applicant::create([
+               'user'
+            ]);
+        } elseif ($request->role == '2') {
+
+        }
 
         event(new Registered($user));
 

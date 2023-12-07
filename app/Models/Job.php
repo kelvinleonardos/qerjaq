@@ -26,7 +26,9 @@ class Job extends Model
         'requirements',
         'salary',
         'job_pict',
+        'applicants_quota',
         'applicants_count',
+        'isActive',
         'company_id',
     ];
 

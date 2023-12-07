@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [\App\Http\Controllers\JobController::class, 'index']);
 Route::get('/job-details/{id}', [\App\Http\Controllers\JobController::class, 'getDetails']);
 Route::get('/search/', [\App\Http\Controllers\JobController::class, 'search'])->name('search');
-Route::get('/job-offered/{id}', [\App\Http\Controllers\JobController::class, 'getOffered'])->middleware(['auth', 'role', 'user']);
+Route::get('/job-offered/{id}', [\App\Http\Controllers\JobController::class, 'getOffered'])->middleware(['auth', 'company', 'user']);
+Route::post('/create-job/{id}', [\App\Http\Controllers\JobController::class, 'store'])->middleware(['auth', 'company', 'user']);
+Route::get('/create-job/{id}', [\App\Http\Controllers\JobController::class, 'create'])->middleware(['auth', 'company', 'user']);
+//Route::post('/create-job/', [\App\Http\Controllers\JobController::class, 'store'])->middleware(['auth', 'company', 'user']);
 
 //Route::get('/dashboard', function () {
 //    return view('dashboard');
