@@ -21,6 +21,8 @@ Route::get('/job-offered/{id}', [\App\Http\Controllers\JobController::class, 'ge
 Route::post('/create-job/{id}', [\App\Http\Controllers\JobController::class, 'store'])->middleware(['auth', 'company', 'user']);
 Route::get('/create-job/{id}', [\App\Http\Controllers\JobController::class, 'create'])->middleware(['auth', 'company', 'user']);
 Route::delete('/delete/{id}', [\App\Http\Controllers\JobController::class, 'destroy']);
+Route::get('/update/{id}', [\App\Http\Controllers\JobController::class, 'edit']);
+Route::post('/update/{id}', [\App\Http\Controllers\JobController::class, 'update']);
 //Route::post('/create-job/', [\App\Http\Controllers\JobController::class, 'store'])->middleware(['auth', 'company', 'user']);
 
 //Route::get('/dashboard', function () {

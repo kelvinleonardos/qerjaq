@@ -1,6 +1,6 @@
 <div class="w-full m-2 max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
     <div>
-        <img class="mb-4 rounded-t-lg mx-auto" src="{{ asset("/storage") }}/{{ $job->job_pict }}"style="width: 400px; height: 200px" alt="product image" />
+        <img class="mb-4 rounded-t-lg mx-auto" src="{{ asset("/storage") }}/{{ $job->job_pict }}"style="width: 400px; height: 200px; object-fit: cover" alt="product image" />
     </div>
     <div class="px-5 pb-5">
         <div class="flex justify-between mt-2.5 mb-5">

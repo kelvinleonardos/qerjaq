@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer("applicants_quota");
             $table->integer("applicants_count")->nullable();
             $table->integer("isActive");
-            $table->foreignId("company_id")->constrained("companies");
+            $table->foreignId("company_id")->constrained("companies")->onDelete('cascade');
             $table->timestamps();
         });
     }

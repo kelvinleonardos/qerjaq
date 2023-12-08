@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\Job;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 
 class JobController extends Controller
 {
@@ -106,18 +107,61 @@ class JobController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Job $job)
+    public function edit(Job $id)
     {
-        //
+        $filter_cat = Job::select('category')
+            ->distinct()
+            ->pluck('category');
+        $filter_com = Company::select('users.name')
+            ->distinct()
+            ->join('jobs', 'jobs.company_id', '=', 'companies.id')
+            ->join('users', 'companies.user_id', '=', 'users.id')
+            ->get()
+            ->pluck('name');
+        return view('job-form', [
+            'status' => 'update',
+            'word' => "",
+            'filter_cat' => $filter_cat,
+            'filter_com' => $filter_com,
+            'job' => $id,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateJobRequest $request, Job $job)
+    public function update(UpdateJobRequest $request, Job $id)
     {
-        //
+
+        $validatedData = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'position' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'country' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'requirements' => ['required', 'string'],
+            'salary' => ['required', 'string', 'max:255'],
+            'applicants_quota' => ['required', 'string'],
+        ]);
+
+        if ($request->hasFile('job_pict')) {
+            // Menghapus gambar lama sebelum menyimpan yang baru
+            Storage::delete($id->job_pict);
+
+            // Menyimpan gambar baru
+            $path = $request->file('job_pict')->store('job_pict');
+
+            // Menyimpan nama file gambar ke dalam kolom job_pict di database
+            $validatedData['job_pict'] = $path;
+        }
+
+        // Memperbarui data pekerjaan
+        $id->update($validatedData);
+
+        return redirect()->to("/job-offered/{$request->user()->company->id}");
     }
+
 
     /**
      * Remove the specified resource from storage.
